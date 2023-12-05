@@ -1,0 +1,12 @@
+is_global = true
+dotnet_analyzer_diagnostic.category-performance.severity = warning
+dotnet_analyzer_diagnostic.category-design.severity = warning
+dotnet_analyzer_diagnostic.category-maintainability.severity = warning
+dotnet_analyzer_diagnostic.category-naming.severity = warning
+dotnet_analyzer_diagnostic.category-reliability.severity = warning
+dotnet_analyzer_diagnostic.category-security.severity = warning
+dotnet_analyzer_diagnostic.category-usage.severity = warning
+
+
+
+
