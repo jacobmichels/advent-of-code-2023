@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace part1;
 
@@ -88,85 +89,189 @@ class Hand
 
     private bool IsFiveOfAKind()
     {
-        return Cards.Distinct().Count() == 1;
+        var cloned = Cards.ToList();
+        cloned.RemoveAll((x) => x == 'J');
+
+        return cloned.Distinct().Count() == 1 || cloned.Distinct().Count() == 0;
     }
 
     private bool IsFourOfAKind()
     {
-        var distinctCards = Cards.Distinct().ToList();
+        var cloned = Cards.ToList();
+        var removedCount = cloned.RemoveAll((x) => x == 'J');
+
+        var distinctCards = cloned.Distinct().ToList();
         if (distinctCards.Count != 2)
         {
             return false;
         }
 
-        var cardCounts = Cards.GroupBy(c => c)
+        var cardCounts = cloned.GroupBy(c => c)
                               .Select(group => group.Count())
                               .OrderBy(count => count)
                               .ToList();
+
+        if (cardCounts.Count != 2)
+        {
+            return false;
+        }
+        if (cardCounts[0] == 0 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        cardCounts[1] += removedCount;
 
         return cardCounts.SequenceEqual(new[] { 1, 4 });
     }
 
     private bool IsFullHouse()
     {
-        var distinctCards = Cards.Distinct().ToList();
+        var cloned = Cards.ToList();
+        var removedCount = cloned.RemoveAll((x) => x == 'J');
+
+        var distinctCards = cloned.Distinct().ToList();
         if (distinctCards.Count != 2)
         {
             return false;
         }
 
-        var cardCounts = Cards.GroupBy(c => c)
+        var cardCounts = cloned.GroupBy(c => c)
                               .Select(group => group.Count())
                               .OrderBy(count => count)
                               .ToList();
+
+        if (cardCounts.Count != 2)
+        {
+            return false;
+        }
+        if (cardCounts[0] == 0 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        if (cardCounts[0] == 1 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        cardCounts[1] += removedCount;
 
         return cardCounts.SequenceEqual(new[] { 2, 3 });
     }
 
     private bool IsThreeOfAKind()
     {
-        var distinctCards = Cards.Distinct();
+        List<char>? cloned = Cards.ToList();
+        var removedCount = cloned.RemoveAll((x) => x == 'J');
+
+        var distinctCards = cloned.Distinct();
         if (distinctCards.Count() != 3)
         {
             return false;
         }
 
-        var cardCounts = Cards.GroupBy(c => c)
+        var cardCounts = cloned.GroupBy(c => c)
                               .Select(group => group.Count())
                               .OrderBy(count => count)
                               .ToList();
+
+        if (cardCounts.Count != 3)
+        {
+            return false;
+        }
+        if (cardCounts[0] == 0 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        if (cardCounts[1] == 0 && removedCount > 0)
+        {
+            cardCounts[1]++;
+            removedCount--;
+        }
+        cardCounts[2] += removedCount;
 
         return cardCounts.SequenceEqual(new[] { 1, 1, 3 });
     }
 
     private bool IsTwoPair()
     {
-        var distinctCards = Cards.Distinct();
+        List<char>? cloned = Cards.ToList();
+        var removedCount = cloned.RemoveAll((x) => x == 'J');
+
+        var distinctCards = cloned.Distinct();
         if (distinctCards.Count() != 3)
         {
             return false;
         }
 
-        var cardCounts = Cards.GroupBy(c => c)
+        var cardCounts = cloned.GroupBy(c => c)
                               .Select(group => group.Count())
                               .OrderBy(count => count)
                               .ToList();
+
+        if (cardCounts.Count != 3)
+        {
+            return false;
+        }
+        if (cardCounts[0] == 0 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        if (cardCounts[1] == 0 && removedCount > 0)
+        {
+            cardCounts[1]++;
+            removedCount--;
+        }
+        if (cardCounts[1] == 1 && removedCount > 0)
+        {
+            cardCounts[1]++;
+            removedCount--;
+        }
+        cardCounts[2] += removedCount;
 
         return cardCounts.SequenceEqual(new[] { 1, 2, 2 });
     }
 
     private bool IsOnePair()
     {
-        var distinctCards = Cards.Distinct();
+        List<char>? cloned = Cards.ToList();
+        var removedCount = cloned.RemoveAll((x) => x == 'J');
+
+        var distinctCards = cloned.Distinct();
         if (distinctCards.Count() != 4)
         {
             return false;
         }
 
-        var cardCounts = Cards.GroupBy(c => c)
+        var cardCounts = cloned.GroupBy(c => c)
                               .Select(group => group.Count())
                               .OrderBy(count => count)
                               .ToList();
+
+        if (cardCounts.Count != 4)
+        {
+            return false;
+        }
+        if (cardCounts[0] == 0 && removedCount > 0)
+        {
+            cardCounts[0]++;
+            removedCount--;
+        }
+        if (cardCounts[1] == 0 && removedCount > 0)
+        {
+            cardCounts[1]++;
+            removedCount--;
+        }
+        if (cardCounts[2] == 0 && removedCount > 0)
+        {
+            cardCounts[2]++;
+            removedCount--;
+        }
+        cardCounts[3] += removedCount;
+
         return cardCounts.SequenceEqual(new[] { 1, 1, 1, 2 });
     }
 }
@@ -179,6 +284,10 @@ class Program
         // I want to sort hands by rank. Rank is determined by stength of a hand relative to the other hands in the game.
         hands.Sort(delegate (Hand x, Hand y)
         {
+            if (x == y)
+            {
+                return 0;
+            }
             if (x.Type.GetValue() > y.Type.GetValue())
             {
                 return -1;
@@ -197,27 +306,27 @@ class Program
         // so instead of fixing the problem I just slap a reversal here
         hands.Reverse();
 
-        foreach (var hand in hands)
-        {
-            Console.Write($"{hand.Type.GetValue()} {hand.Bid} ");
-            foreach (var card in hand.Cards)
-            {
-                Console.Write(card);
-            }
-            Console.WriteLine();
-        }
-
-        // var sum = 0;
-        // for (int i = 0; i < hands.Count; i++)
+        // foreach (var hand in hands)
         // {
-        //     var rank = i + 1;
-        //     var hand = hands[i];
-
-        //     Console.WriteLine($"{rank * hand.Bid}");
-        //     sum += rank * hand.Bid;
+        //     Console.Write($"{hand.Type.GetValue()} {hand.Bid} ");
+        //     foreach (var card in hand.Cards)
+        //     {
+        //         Console.Write(card);
+        //     }
+        //     Console.WriteLine();
         // }
 
-        // Console.WriteLine(sum);
+        var sum = 0;
+        for (int i = 0; i < hands.Count; i++)
+        {
+            var rank = i + 1;
+            var hand = hands[i];
+
+            Console.WriteLine($"{rank * hand.Bid}");
+            sum += rank * hand.Bid;
+        }
+
+        Console.WriteLine(sum);
     }
 
     static int CompareSameTypeHands(Hand x, Hand y)
@@ -251,7 +360,6 @@ class Program
                 return 1;
             }
         }
-
         throw new UnreachableException();
     }
 
