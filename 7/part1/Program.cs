@@ -197,27 +197,27 @@ class Program
         // so instead of fixing the problem I just slap a reversal here
         hands.Reverse();
 
-        foreach (var hand in hands)
-        {
-            Console.Write($"{hand.Type.GetValue()} {hand.Bid} ");
-            foreach (var card in hand.Cards)
-            {
-                Console.Write(card);
-            }
-            Console.WriteLine();
-        }
-
-        // var sum = 0;
-        // for (int i = 0; i < hands.Count; i++)
+        // foreach (var hand in hands)
         // {
-        //     var rank = i + 1;
-        //     var hand = hands[i];
-
-        //     Console.WriteLine($"{rank * hand.Bid}");
-        //     sum += rank * hand.Bid;
+        //     Console.Write($"{hand.Type.GetValue()} {hand.Bid} ");
+        //     foreach (var card in hand.Cards)
+        //     {
+        //         Console.Write(card);
+        //     }
+        //     Console.WriteLine();
         // }
 
-        // Console.WriteLine(sum);
+        var sum = 0;
+        for (int i = 0; i < hands.Count; i++)
+        {
+            var rank = i + 1;
+            var hand = hands[i];
+
+            Console.WriteLine($"{rank * hand.Bid}");
+            sum += rank * hand.Bid;
+        }
+
+        Console.WriteLine(sum);
     }
 
     static int CompareSameTypeHands(Hand x, Hand y)
